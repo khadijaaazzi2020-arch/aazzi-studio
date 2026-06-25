@@ -1,26 +1,245 @@
 @import "tailwindcss";
 
+/* ============================================================
+   AAZZI STUDIO — LOCKED DESIGN TOKENS
+   Derived from the 3D "AA" monogram logo.
+   Do not deviate. See DESIGN_TOKENS.md.
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* — Surface — warm-biased near-black, NOT pure #000 — */
+  --bg: #121414;
+  --bg-2: #181b1b;       /* elevated panels */
+  --bg-3: #1d2120;       /* cards on cards */
+
+  /* — Accent — Dark Coral (from the glowing half of the logo) — */
+  --coral: #e0473a;
+  --coral-bright: #ff5246; /* glow / hover */
+  --coral-deep: #b5362c;   /* pressed / shadow tint */
+
+  /* — Text — soft off-white, NOT pure #fff — */
+  --text: #e3e2e2;
+  --text-dim: #a7a9a8;
+  --text-faint: #6c6f6e;
+
+  /* — Lines / hairlines — */
+  --line: rgba(227, 226, 226, 0.10);
+  --line-strong: rgba(227, 226, 226, 0.18);
+
+  /* — Radii — */
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 22px;
+  --r-xl: 32px;
+
+  /* — Shadows (warm-tinted, never harsh black) — */
+  --shadow-soft: 0 18px 50px -20px rgba(0, 0, 0, 0.65);
+  --shadow-coral: 0 0 0 1px rgba(224, 71, 58, 0.35),
+                  0 22px 60px -24px rgba(224, 71, 58, 0.45);
+
+  /* — Fluid type scale (clamp: mobile → desktop) — */
+  --step--1: clamp(0.78rem, 0.74rem + 0.2vw, 0.88rem);
+  --step-0:  clamp(0.95rem, 0.9rem + 0.25vw, 1.05rem);
+  --step-1:  clamp(1.15rem, 1.05rem + 0.5vw, 1.4rem);
+  --step-2:  clamp(1.5rem, 1.3rem + 1vw, 2.1rem);
+  --step-3:  clamp(2rem, 1.6rem + 2vw, 3.3rem);
+  --step-4:  clamp(2.7rem, 2rem + 3.5vw, 5rem);
+  --step-5:  clamp(3.4rem, 2.2rem + 6vw, 8rem);
+
+  /* — Layout — */
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --maxw: 1440px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-bg-3: var(--bg-3);
+  --color-coral: var(--coral);
+  --color-coral-bright: var(--coral-bright);
+  --color-text: var(--text);
+  --color-text-dim: var(--text-dim);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================================
+   BASE
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: auto; /* Lenis owns scrolling; native smooth would fight it */
+  /* Remove the grey tap flash on iOS so taps feel native/premium. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* OPERA-MOBILE SAFETY:
+   overflow-x is clipped at the document edge with `clip` (paint-only, no
+   scroll container) — NOT `hidden`. This contains transient transform
+   overshoot from reveal animations without creating a new scroll context
+   that ScrollTrigger/Lenis would mis-measure after a refresh. */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+  overflow-x: clip;
+  background: var(--bg);
+  color: var(--text);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: var(--step-0);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* subtle filmic grain + tonal field so the near-black has depth */
+  background-image:
+    radial-gradient(120% 80% at 50% -10%, rgba(224, 71, 58, 0.08), transparent 60%),
+    radial-gradient(80% 60% at 100% 110%, rgba(224, 71, 58, 0.05), transparent 55%);
+  background-attachment: scroll;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display), serif;
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p { margin: 0; }
+a { color: inherit; text-decoration: none; }
+img, video, svg { display: block; max-width: 100%; height: auto; }
+button { font: inherit; color: inherit; }
+/* Faster, more reliable taps on touch devices (no 300ms delay, no double-tap
+   zoom on controls) without disabling pinch-zoom on content. */
+a, button { touch-action: manipulation; }
+
+::selection {
+  background: var(--coral);
+  color: #fff;
+}
+
+/* Focus visibility for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--coral-bright);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+.shell {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.eyebrow {
+  font-family: var(--font-sans), sans-serif;
+  font-size: var(--step--1);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+}
+.eyebrow::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: var(--coral);
+}
+
+.coral { color: var(--coral-bright); }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0.95rem 1.6rem;
+  border-radius: 999px;
+  font-size: var(--step-0);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.25s ease, background 0.25s ease,
+    border-color 0.25s ease, box-shadow 0.3s ease, color 0.25s ease;
+  will-change: transform;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-coral {
+  background: var(--coral);
+  color: #fff;
+  box-shadow: 0 14px 40px -16px rgba(224, 71, 58, 0.7);
+}
+.btn-coral:hover {
+  background: var(--coral-bright);
+  box-shadow: 0 18px 50px -14px rgba(255, 82, 70, 0.75);
+}
+.btn-ghost {
+  border-color: var(--line-strong);
+  color: var(--text);
+}
+.btn-ghost:hover { border-color: var(--coral); color: var(--coral-bright); }
+
+/* Section scaffolding */
+.section {
+  position: relative;
+  padding-block: clamp(6rem, 12vw, 11rem);
+}
+.section-head {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  max-width: 56ch;
+  margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+}
+.section-title {
+  font-size: var(--step-4);
+}
+.section-lead {
+  font-size: var(--step-1);
+  color: var(--text-dim);
+}
+
+/* The reveal mask used by SplitText / Reveal — hidden state.
+   Rendered identically on server and client to avoid hydration drift. */
+[data-reveal] { will-change: transform, opacity; }
+
+/* Respect reduced motion: kill transforms, show content. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }
