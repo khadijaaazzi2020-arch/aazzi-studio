@@ -15,20 +15,6 @@ type Store = {
 
 const STORES: Store[] = [
   {
-    name: "Velora Femme",
-    href: "https://velora-femme-qtf7.vercel.app",
-    category: "Fashion · E-commerce",
-    points: ["Premium Fashion Store", "Mobile Optimized", "Custom Design"],
-    img: "/photo/velora-femme-fashion-mobile.webp.png",
-  },
-  {
-    name: "Velora Perfumes",
-    href: "https://velora-nu-pied.vercel.app",
-    category: "Fragrance · E-commerce",
-    points: ["Luxury Fragrance Store", "Mobile Optimized", "Conversion Focused"],
-    img: "/photo/velora-homepage-desktop.webp.png",
-  },
-  {
     name: "GA Natural Store",
     href: "https://ganaturalstore.com",
     category: "Natural products · E-commerce",
@@ -41,6 +27,20 @@ const STORES: Store[] = [
     category: "Gourmet popcorn · E-commerce",
     points: ["Gourmet Popcorn Store", "Cinematic Aesthetic", "Conversion Focused"],
     img: "/photo/popnjoy.png",
+  },
+  {
+    name: "Velora Perfumes",
+    href: "https://velora-nu-pied.vercel.app",
+    category: "Fragrance · E-commerce",
+    points: ["Luxury Fragrance Store", "Mobile Optimized", "Conversion Focused"],
+    img: "/photo/velora-homepage-desktop.webp.png",
+  },
+  {
+    name: "Velora Femme",
+    href: "https://velora-femme-qtf7.vercel.app",
+    category: "Fashion · E-commerce",
+    points: ["Premium Fashion Store", "Mobile Optimized", "Custom Design"],
+    img: "/photo/velora-femme-fashion-mobile.webp.png",
   },
 ];
 

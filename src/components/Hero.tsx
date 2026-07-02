@@ -94,6 +94,17 @@ export default function Hero() {
 
   return (
     <section id="top" ref={root} className="hero">
+      <div className="hero-art" aria-hidden>
+        <Image
+          src="/photo/img hero.png"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="hero-art-img"
+        />
+        <div className="hero-scrim" />
+      </div>
       <div className="hero-glow" aria-hidden />
 
       <div className="shell hero-grid">
@@ -156,37 +167,6 @@ export default function Hero() {
           </ul>
         </div>
 
-        <div className="hero-visual hero-fade">
-          <span className="hero-badge">
-            <span className="dot" /> Velora Femme · Live store
-          </span>
-          <div className="laptop" aria-hidden>
-            <div className="laptop-screen">
-              <Image
-                src="/photo/velora-femme-fashion-mobile.webp.png"
-                alt=""
-                fill
-                priority
-                sizes="(max-width: 980px) 90vw, 560px"
-                className="device-shot"
-              />
-            </div>
-            <div className="laptop-base"><span /></div>
-          </div>
-
-          <div className="phone">
-            <div className="phone-screen">
-              <Image
-                src="/photo/ganatural-mobile.webp.jpeg"
-                alt=""
-                fill
-                priority
-                sizes="180px"
-                className="device-shot"
-              />
-            </div>
-          </div>
-        </div>
       </div>
 
       <style jsx>{`
@@ -199,6 +179,31 @@ export default function Hero() {
           overflow: clip;
           padding-top: 96px;
           padding-bottom: 56px;
+        }
+        /* ── Full-bleed background artwork ── */
+        .hero-art {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          pointer-events: none;
+        }
+        .hero-art :global(.hero-art-img) {
+          object-fit: cover;
+          /* Devices live on the right of the composite; anchor there so the
+             left stays clear for the copy and nothing important is cropped. */
+          object-position: right center;
+        }
+        /* Darken toward the left so the headline/CTA stay readable over art. */
+        .hero-scrim {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            90deg,
+            #090909 0%,
+            rgba(9, 9, 9, 0.92) 26%,
+            rgba(9, 9, 9, 0.45) 48%,
+            rgba(9, 9, 9, 0) 68%
+          );
         }
         .hero-glow {
           position: absolute;
@@ -215,16 +220,16 @@ export default function Hero() {
           );
           filter: blur(30px);
           pointer-events: none;
-          z-index: 0;
+          z-index: 1;
         }
         .hero-grid {
           position: relative;
           z-index: 2;
           width: 100%;
           display: grid;
-          /* Visual column gets the larger share — the featured project is the
-             hero's proof, so it leads the visual hierarchy. */
-          grid-template-columns: 1fr 1.28fr;
+          /* Single column: copy occupies the left ~40%, the artwork fills the
+             rest of the full-bleed background behind it. */
+          grid-template-columns: minmax(0, 42%);
           align-items: center;
           gap: clamp(2rem, 5vw, 4.5rem);
         }
@@ -285,104 +290,40 @@ export default function Hero() {
           color: var(--text-faint);
         }
 
-        /* ── Device mockups (featured project showcase) ── */
-        .hero-visual {
-          position: relative;
-          justify-self: center;
-          width: 100%;
-          max-width: 700px;
-        }
-        .hero-badge {
-          position: absolute;
-          top: -0.9rem;
-          left: -0.4rem;
-          z-index: 4;
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.45rem 0.9rem;
-          border-radius: 999px;
-          font-size: var(--step--1);
-          color: var(--text);
-          background: rgba(18, 20, 20, 0.82);
-          border: 1px solid var(--line-strong);
-          backdrop-filter: blur(8px);
-          box-shadow: var(--shadow-soft);
-          white-space: nowrap;
-        }
-        .hero-badge .dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background: #25d366;
-          box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.18);
-        }
-        .laptop { width: 100%; }
-        .laptop-screen {
-          position: relative;
-          aspect-ratio: 16 / 10;
-          border: 8px solid #232626;
-          border-bottom: 0;
-          border-radius: 16px 16px 0 0;
-          overflow: hidden;
-          background: #000;
-          box-shadow: var(--shadow-soft);
-        }
-        .laptop-base {
-          position: relative;
-          height: 16px;
-          margin: 0 -7%;
-          border-radius: 0 0 14px 14px;
-          background: linear-gradient(180deg, #2a2d2e, #15181a);
-          box-shadow: var(--shadow-soft);
-        }
-        .laptop-base span {
-          position: absolute;
-          top: 0;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 16%;
-          height: 5px;
-          border-radius: 0 0 6px 6px;
-          background: rgba(0, 0, 0, 0.45);
-        }
-        .phone {
-          position: absolute;
-          right: -3%;
-          bottom: -10%;
-          width: 30%;
-          max-width: 168px;
-          z-index: 3;
-        }
-        .phone-screen {
-          position: relative;
-          aspect-ratio: 9 / 19;
-          border: 7px solid #232626;
-          border-radius: 26px;
-          overflow: hidden;
-          background: #000;
-          box-shadow: 0 26px 60px -22px rgba(0, 0, 0, 0.85);
-        }
-        .hero-visual :global(.device-shot) {
-          object-fit: cover;
-          object-position: top center;
-        }
-
+        /* ── Tablet: keep full-bleed art, widen copy, deepen scrim ── */
         @media (max-width: 980px) {
           .hero {
-            min-height: auto;
+            min-height: 88svh;
             padding-top: 120px;
             padding-bottom: 64px;
             text-align: left;
           }
-          .hero-grid { grid-template-columns: 1fr; gap: 3rem; }
+          .hero-grid { grid-template-columns: minmax(0, 68%); }
           .hero-copy { max-width: 100%; }
-          .hero-visual { max-width: 440px; margin-inline: auto; }
+          .hero-scrim {
+            background: linear-gradient(
+              90deg,
+              #090909 0%,
+              rgba(9, 9, 9, 0.9) 40%,
+              rgba(9, 9, 9, 0.55) 70%,
+              rgba(9, 9, 9, 0.2) 100%
+            );
+          }
         }
+        /* ── Mobile: center the art, drop it behind a strong vertical scrim ── */
         @media (max-width: 560px) {
+          .hero-grid { grid-template-columns: 1fr; }
+          .hero-art :global(.hero-art-img) { object-position: center; }
+          .hero-scrim {
+            background: linear-gradient(
+              180deg,
+              rgba(9, 9, 9, 0.96) 0%,
+              rgba(9, 9, 9, 0.8) 45%,
+              rgba(9, 9, 9, 0.9) 100%
+            );
+          }
           .hero-trust { grid-template-columns: repeat(2, 1fr); }
           .hero-actions :global(.btn) { flex: 1 1 auto; justify-content: center; }
-          .phone { width: 34%; right: -2%; bottom: -8%; }
         }
       `}</style>
     </section>
