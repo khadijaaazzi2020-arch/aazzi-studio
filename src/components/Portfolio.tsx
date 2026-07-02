@@ -35,6 +35,13 @@ const STORES: Store[] = [
     points: ["Natural Products Store", "Built for Trust", "Conversion Focused"],
     img: "/photo/ganatural-desktop.webp.png",
   },
+  {
+    name: "Pop'n Joy",
+    href: "https://my-popnjoy-store.vercel.app",
+    category: "Gourmet popcorn · E-commerce",
+    points: ["Gourmet Popcorn Store", "Cinematic Aesthetic", "Conversion Focused"],
+    img: "/photo/popnjoy.png",
+  },
 ];
 
 export default function Portfolio() {
