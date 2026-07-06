@@ -53,7 +53,7 @@ export default function Footer() {
 
       <div className="shell footer-base">
         <span>© {new Date().getFullYear()} AAZZI STUDIO. All rights reserved.</span>
-        <span>hello@aazzi.studio</span>
+        <span>hello@aazzistudio.com</span>
       </div>
 
       <style jsx>{`

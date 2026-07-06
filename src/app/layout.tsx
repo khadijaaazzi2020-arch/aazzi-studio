@@ -9,6 +9,7 @@ import MobileCtaBar from "@/components/MobileCtaBar";
 // production unless ?debug=viewport is present. Delete this import + the
 // <ViewportProbe /> mount below once on-device verification is complete.
 import ViewportProbe from "@/components/ViewportProbe";
+import { SITE_URL } from "@/lib/site";
 
 const syne = Syne({
   variable: "--font-display",
@@ -23,10 +24,11 @@ const geist = Geist({
   display: "swap",
 });
 
-const SITE = "https://aazzi.studio";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE),
+  metadataBase: new URL(SITE_URL),
+  alternates: {
+    canonical: "/",
+  },
   title: {
     default: "AAZZI STUDIO — Premium Websites & E-commerce Stores",
     template: "%s · AAZZI STUDIO",
@@ -46,7 +48,7 @@ export const metadata: Metadata = {
   authors: [{ name: "AAZZI STUDIO" }],
   openGraph: {
     type: "website",
-    url: SITE,
+    url: SITE_URL,
     title: "AAZZI STUDIO — Premium Websites & E-commerce Stores",
     description:
       "Fast, modern websites and high-converting e-commerce stores that help brands grow online.",

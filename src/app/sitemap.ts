@@ -1,7 +1,5 @@
 import type { MetadataRoute } from "next";
-
-// Keep in sync with metadataBase in app/layout.tsx.
-const SITE = "https://aazzi.studio";
+import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
@@ -10,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Add entries here as dedicated routes (/products, /about, …) are built.
   return [
     {
-      url: SITE,
+      url: SITE_URL,
       lastModified,
       changeFrequency: "weekly",
       priority: 1,
