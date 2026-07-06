@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Syne, Geist } from "next/font/google";
 import "./globals.css";
 import StyledJsxRegistry from "@/components/StyledJsxRegistry";
@@ -94,6 +95,11 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+// GA4 measurement ID; inlined at build time. Analytics only loads in
+// production builds AND when the ID is configured, so dev/preview traffic
+// never pollutes the property.
+const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -107,6 +113,9 @@ export default function RootLayout({
           <MobileCtaBar />
         </StyledJsxRegistry>
       </body>
+      {process.env.NODE_ENV === "production" && gaId && (
+        <GoogleAnalytics gaId={gaId} />
+      )}
     </html>
   );
 }
