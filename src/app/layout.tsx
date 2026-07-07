@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import { Syne, Geist } from "next/font/google";
 import "./globals.css";
 import StyledJsxRegistry from "@/components/StyledJsxRegistry";
@@ -100,12 +100,30 @@ export const viewport: Viewport = {
 // never pollutes the property.
 const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
+// GTM container ID; same production-and-configured gating as GA above.
+const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${syne.variable} ${geist.variable}`}>
+      {process.env.NODE_ENV === "production" && gtmId && (
+        <GoogleTagManager gtmId={gtmId} />
+      )}
       <body>
+        {/* GTM noscript fallback — the @next/third-parties component only
+            renders the script half of the snippet. */}
+        {process.env.NODE_ENV === "production" && gtmId && (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+            />
+          </noscript>
+        )}
         <StyledJsxRegistry>
           <ViewportProbe />
           <SmoothScroll>{children}</SmoothScroll>
