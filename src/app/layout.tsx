@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
+import { GoogleTagManager } from "@next/third-parties/google";
 import { Syne, Geist } from "next/font/google";
 import "./globals.css";
 import StyledJsxRegistry from "@/components/StyledJsxRegistry";
@@ -95,12 +95,10 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-// GA4 measurement ID; inlined at build time. Analytics only loads in
-// production builds AND when the ID is configured, so dev/preview traffic
-// never pollutes the property.
-const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
-
-// GTM container ID; same production-and-configured gating as GA above.
+// GTM container ID; inlined at build time. GTM is the sole analytics loader
+// (GA4 is configured inside the container) and only loads in production
+// builds AND when the ID is configured, so dev/preview traffic never
+// pollutes the property.
 const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
 
 export default function RootLayout({
@@ -131,9 +129,6 @@ export default function RootLayout({
           <MobileCtaBar />
         </StyledJsxRegistry>
       </body>
-      {process.env.NODE_ENV === "production" && gaId && (
-        <GoogleAnalytics gaId={gaId} />
-      )}
     </html>
   );
 }
