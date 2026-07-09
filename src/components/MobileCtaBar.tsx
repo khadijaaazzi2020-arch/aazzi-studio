@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { openContactModal } from "./ContactModal";
+import { AnalyticsEvent, trackEvent } from "@/lib/analytics";
 
 /**
  * MobileCtaBar — a fixed, always-reachable "Start Your Project" bar on phones.
@@ -45,7 +46,13 @@ export default function MobileCtaBar() {
       <button
         type="button"
         className="mcta-btn"
-        onClick={openContactModal}
+        onClick={() => {
+          trackEvent(AnalyticsEvent.CTA_CLICK, {
+            location: "mobile_cta_bar",
+            cta_text: "Start Your Project",
+          });
+          openContactModal("mobile_cta_bar");
+        }}
         tabIndex={visible ? 0 : -1}
       >
         Start Your Project

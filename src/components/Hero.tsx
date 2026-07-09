@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import SplitText from "./anim/SplitText";
 import { openContactModal } from "./ContactModal";
+import { AnalyticsEvent, trackEvent } from "@/lib/analytics";
 
 const TRUST = [
   {
@@ -131,7 +132,11 @@ export default function Hero() {
               data-cta
               onClick={(e) => {
                 e.preventDefault();
-                openContactModal();
+                trackEvent(AnalyticsEvent.CTA_CLICK, {
+                  location: "hero",
+                  cta_text: "Start Your Project",
+                });
+                openContactModal("hero");
               }}
             >
               Start Your Project
@@ -142,6 +147,10 @@ export default function Hero() {
               data-cta
               onClick={(e) => {
                 e.preventDefault();
+                trackEvent(AnalyticsEvent.CTA_CLICK, {
+                  location: "hero",
+                  cta_text: "View Our Work",
+                });
                 const lenis = (window as unknown as { lenis?: import("lenis").default }).lenis;
                 const target = document.getElementById("work");
                 if (lenis && target) lenis.scrollTo(target, { offset: -84, duration: 1.1 });

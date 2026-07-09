@@ -2,8 +2,16 @@
 
 import Image from "next/image";
 import { openContactModal } from "./ContactModal";
+import { AnalyticsEvent, trackEvent } from "@/lib/analytics";
 
 export default function Footer() {
+  const trackFooterLink = (label: string, href: string) =>
+    trackEvent(AnalyticsEvent.NAV_CLICK, {
+      location: "footer",
+      link_text: label,
+      link_target: href,
+    });
+
   return (
     <footer className="footer">
       <div className="shell footer-inner">
@@ -21,18 +29,18 @@ export default function Footer() {
 
         <nav className="footer-col" aria-label="Navigation">
           <h3>Navigation</h3>
-          <a href="#work">Work</a>
-          <a href="#services">Services</a>
-          <a href="#process">Process</a>
-          <a href="#why">Why me</a>
+          <a href="#work" onClick={() => trackFooterLink("Work", "#work")}>Work</a>
+          <a href="#services" onClick={() => trackFooterLink("Services", "#services")}>Services</a>
+          <a href="#process" onClick={() => trackFooterLink("Process", "#process")}>Process</a>
+          <a href="#why" onClick={() => trackFooterLink("Why me", "#why")}>Why me</a>
         </nav>
 
         <nav className="footer-col" aria-label="Services">
           <h3>Services</h3>
-          <a href="#services">Website Design</a>
-          <a href="#services">E-commerce Stores</a>
-          <a href="#services">Brand Identity</a>
-          <a href="#services">Motion &amp; Interaction</a>
+          <a href="#services" onClick={() => trackFooterLink("Website Design", "#services")}>Website Design</a>
+          <a href="#services" onClick={() => trackFooterLink("E-commerce Stores", "#services")}>E-commerce Stores</a>
+          <a href="#services" onClick={() => trackFooterLink("Brand Identity", "#services")}>Brand Identity</a>
+          <a href="#services" onClick={() => trackFooterLink("Motion & Interaction", "#services")}>Motion &amp; Interaction</a>
         </nav>
 
         <div className="footer-col footer-talk">
@@ -43,7 +51,11 @@ export default function Footer() {
             href="mailto:Khadija.aazzi.2020@gmail.com?subject=Project%20enquiry"
             onClick={(e) => {
               e.preventDefault();
-              openContactModal();
+              trackEvent(AnalyticsEvent.CTA_CLICK, {
+                location: "footer",
+                cta_text: "Start Your Project",
+              });
+              openContactModal("footer");
             }}
           >
             Start Your Project →

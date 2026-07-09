@@ -2,6 +2,7 @@
 
 import SplitText from "./anim/SplitText";
 import { openContactModal } from "./ContactModal";
+import { AnalyticsEvent, trackEvent } from "@/lib/analytics";
 
 export default function Contact() {
   return (
@@ -24,7 +25,11 @@ export default function Contact() {
               href="mailto:Khadija.aazzi.2020@gmail.com?subject=Project%20enquiry"
               onClick={(e) => {
                 e.preventDefault();
-                openContactModal();
+                trackEvent(AnalyticsEvent.CTA_CLICK, {
+                  location: "contact_band",
+                  cta_text: "Start Your Project",
+                });
+                openContactModal("contact_band");
               }}
             >
               Start Your Project

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type Lenis from "lenis";
+import { AnalyticsEvent, trackEvent } from "@/lib/analytics";
 
 /* ============================================================
    CONTACT DETAILS — edit here.
@@ -29,9 +30,13 @@ const whatsappHref = WHATSAPP_NUMBER
 
 const OPEN_EVENT = "aazzi:open-contact";
 
-/** Open the contact modal from anywhere (buttons, links, code). */
-export function openContactModal() {
-  window.dispatchEvent(new Event(OPEN_EVENT));
+/**
+ * Open the contact modal from anywhere (buttons, links, code).
+ * `source` identifies the trigger location for analytics (e.g. "hero",
+ * "navbar", "footer") — the open itself is tracked centrally in the modal.
+ */
+export function openContactModal(source = "unknown") {
+  window.dispatchEvent(new CustomEvent(OPEN_EVENT, { detail: { source } }));
 }
 
 const FOCUSABLE =
@@ -55,12 +60,16 @@ export default function ContactModal() {
 
   // Listen for global open requests.
   useEffect(() => {
-    const onOpen = () => {
+    const onOpen = (e: Event) => {
       window.clearTimeout(closeTimer.current);
       lastFocused.current = document.activeElement as HTMLElement | null;
       setOpen(true);
       // next frame → trigger the enter transition
       requestAnimationFrame(() => requestAnimationFrame(() => setShow(true)));
+      // Key micro-conversion: every modal open, tagged with its trigger.
+      const source =
+        (e as CustomEvent<{ source?: string }>).detail?.source ?? "unknown";
+      trackEvent(AnalyticsEvent.CONTACT_MODAL_OPEN, { source });
     };
     window.addEventListener(OPEN_EVENT, onOpen);
     return () => window.removeEventListener(OPEN_EVENT, onOpen);

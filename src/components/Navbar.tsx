@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import type Lenis from "lenis";
 import { openContactModal } from "./ContactModal";
+import { AnalyticsEvent, trackEvent } from "@/lib/analytics";
 
 const LINKS = [
   { label: "Work", href: "#work" },
@@ -64,6 +65,10 @@ export default function Navbar() {
   const go = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
     setOpen(false);
+    trackEvent(AnalyticsEvent.NAV_CLICK, {
+      location: "navbar",
+      link_target: href,
+    });
     if (href !== "#top") setActive(href.slice(1));
     const lenis = (window as unknown as { lenis?: Lenis }).lenis;
     // The mobile drawer leaves Lenis STOPPED. scrollTo() is ignored while
@@ -91,7 +96,11 @@ export default function Navbar() {
   const openProject = (e: React.MouseEvent) => {
     e.preventDefault();
     setOpen(false);
-    openContactModal();
+    trackEvent(AnalyticsEvent.CTA_CLICK, {
+      location: "navbar",
+      cta_text: "Start Your Project",
+    });
+    openContactModal("navbar");
   };
 
   return (
@@ -104,7 +113,7 @@ export default function Navbar() {
           </span>
         </a>
 
-        <nav className={`links ${open ? "open" : ""}`} aria-label="Primary">
+        <nav id="primary-nav" className={`links ${open ? "open" : ""}`} aria-label="Primary">
           {LINKS.map((l) => {
             const isActive = active === l.href.slice(1);
             return (
@@ -128,6 +137,7 @@ export default function Navbar() {
           className={`burger ${open ? "open" : ""}`}
           aria-label="Toggle menu"
           aria-expanded={open}
+          aria-controls="primary-nav"
           onClick={() => setOpen((v) => !v)}
         >
           <span /><span /><span />

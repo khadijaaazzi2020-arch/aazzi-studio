@@ -4,6 +4,7 @@ import Image from "next/image";
 import SplitText from "./anim/SplitText";
 import Reveal from "./anim/Reveal";
 import { openContactModal } from "./ContactModal";
+import { AnalyticsEvent, trackEvent } from "@/lib/analytics";
 
 type Store = {
   name: string;
@@ -58,7 +59,11 @@ export default function Portfolio() {
             href="#contact"
             onClick={(e) => {
               e.preventDefault();
-              openContactModal();
+              trackEvent(AnalyticsEvent.CTA_CLICK, {
+                location: "portfolio",
+                cta_text: "Start a project",
+              });
+              openContactModal("portfolio");
             }}
           >
             Start a project
@@ -77,6 +82,13 @@ export default function Portfolio() {
                 href={s.href}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() =>
+                  trackEvent(AnalyticsEvent.PORTFOLIO_PROJECT_CLICK, {
+                    project_name: s.name,
+                    project_category: s.category,
+                    link_url: s.href,
+                  })
+                }
               >
                 <div className="work-shot-wrap">
                   <Image

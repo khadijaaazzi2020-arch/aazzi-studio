@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { preconnect, prefetchDNS } from "react-dom";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Syne, Geist } from "next/font/google";
 import "./globals.css";
@@ -10,6 +11,7 @@ import MobileCtaBar from "@/components/MobileCtaBar";
 // production unless ?debug=viewport is present. Delete this import + the
 // <ViewportProbe /> mount below once on-device verification is complete.
 import ViewportProbe from "@/components/ViewportProbe";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 import { SITE_URL } from "@/lib/site";
 
 const syne = Syne({
@@ -47,6 +49,17 @@ export const metadata: Metadata = {
     "AAZZI STUDIO",
   ],
   authors: [{ name: "AAZZI STUDIO" }],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   openGraph: {
     type: "website",
     url: SITE_URL,
@@ -104,6 +117,13 @@ const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // Resource hints: GTM (and the GA4 script it loads) comes from
+  // googletagmanager.com; hit beacons go to google-analytics.com. Warming
+  // these up removes connection latency without adding any blocking work.
+  if (process.env.NODE_ENV === "production" && gtmId) {
+    preconnect("https://www.googletagmanager.com");
+    prefetchDNS("https://www.google-analytics.com");
+  }
   return (
     <html lang="en" className={`${syne.variable} ${geist.variable}`}>
       {process.env.NODE_ENV === "production" && gtmId && (
@@ -128,6 +148,7 @@ export default function RootLayout({
           <ContactModal />
           <MobileCtaBar />
         </StyledJsxRegistry>
+        <AnalyticsTracker />
       </body>
     </html>
   );
