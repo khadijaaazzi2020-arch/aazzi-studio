@@ -12,6 +12,7 @@ import MobileCtaBar from "@/components/MobileCtaBar";
 // <ViewportProbe /> mount below once on-device verification is complete.
 import ViewportProbe from "@/components/ViewportProbe";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
+import ClarityAnalytics from "@/components/ClarityAnalytics";
 import { SITE_URL } from "@/lib/site";
 
 const syne = Syne({
@@ -124,6 +125,11 @@ export default function RootLayout({
     preconnect("https://www.googletagmanager.com");
     prefetchDNS("https://www.google-analytics.com");
   }
+  // Clarity loads post-hydration (see ClarityAnalytics), so a DNS warm-up is
+  // all it needs — a full preconnect would hold a socket open for nothing.
+  if (process.env.NODE_ENV === "production" && process.env.NEXT_PUBLIC_CLARITY_ID) {
+    prefetchDNS("https://www.clarity.ms");
+  }
   return (
     <html lang="en" className={`${syne.variable} ${geist.variable}`}>
       {process.env.NODE_ENV === "production" && gtmId && (
@@ -149,6 +155,7 @@ export default function RootLayout({
           <MobileCtaBar />
         </StyledJsxRegistry>
         <AnalyticsTracker />
+        <ClarityAnalytics />
       </body>
     </html>
   );
